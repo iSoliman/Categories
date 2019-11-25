@@ -9,6 +9,33 @@
 import XCTest
 @testable import Categories
 
+
+
+class NetworkMockUP: NetworkManager {
+    
+    override func getList(success: ([String]) -> Void, failure: (String) -> Void) {
+        
+        let categories = ["Animals", "Anime", "Anti-Malware", "Art & Design", "Books"]
+        success(categories)
+    }
+}
+
+class CategorySceneMockup: CategoryViewProtocol {
+    
+    func categoriesDidLoadSuccessfully(_ categories: [String]) {
+        
+        XCTAssert(categories.count == 5)
+    }
+    
+    func errorCallingAPI(errorMsg: String) {
+        
+        
+    }
+    
+    
+    
+}
+
 class CategoriesTests: XCTestCase {
 
     override func setUp() {
@@ -20,8 +47,12 @@ class CategoriesTests: XCTestCase {
     }
 
     func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        let mockup = NetworkMockUP()
+        let sceneMockUP = CategorySceneMockup()
+        let categoriesPresenter = CategoryPresenter(scene: sceneMockUP, service: mockup)
+        
+        categoriesPresenter.loadCategories()
     }
 
     func testPerformanceExample() {
